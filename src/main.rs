@@ -1,5 +1,6 @@
 use axum::{routing::get, Router, Extension};
 use std::net::SocketAddr;
+use dotenv::dotenv;
 
 mod todo_controller;
 mod database;
@@ -10,6 +11,7 @@ use crate::database::db_connect;
 
 #[tokio::main]
 async fn main() {
+    dotenv().ok();
     // build our application with a route
 
     let pool = db_connect().await.unwrap();
