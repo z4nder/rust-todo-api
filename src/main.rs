@@ -8,14 +8,13 @@ mod database;
 mod models;
 mod repository;
 
-use crate::todo_controller::{index, make_memes};
+use crate::todo_controller::{index, find};
 use crate::database::db_connect;
 use crate::todo_repository::{TodoRepository};
 
 #[tokio::main]
 async fn main() {
     dotenv().ok();
-    // build our application with a route
 
     let pool = db_connect().await.unwrap();
 
@@ -27,7 +26,7 @@ async fn main() {
 
     let app = Router::new()
     .route("/", get(index))
-    .route("/memes", get(make_memes))
+    .route("/:id", get(find))
     .layer(Extension(todo_repository));
 
     // run it
