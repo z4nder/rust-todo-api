@@ -10,6 +10,7 @@ mod repository;
 
 use crate::todo_controller::{index, make_memes};
 use crate::database::db_connect;
+use crate::todo_repository::{TodoRepository};
 
 #[tokio::main]
 async fn main() {
@@ -18,11 +19,16 @@ async fn main() {
 
     let pool = db_connect().await.unwrap();
 
+    
+    let todo_repository = TodoRepository{
+        db_connection: pool
+    };
+
 
     let app = Router::new()
     .route("/", get(index))
     .route("/memes", get(make_memes))
-    .layer(Extension(pool));
+    .layer(Extension(todo_repository));
 
     // run it
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));

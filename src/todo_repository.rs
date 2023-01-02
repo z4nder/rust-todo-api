@@ -4,8 +4,9 @@ use async_trait::async_trait;
 use crate::repository::Repository;
 use crate::models::{Todo};
 
+#[derive(Clone)]
 pub struct TodoRepository {
-    db_connection: MySqlPool,
+    pub db_connection: MySqlPool,
 }
 
 #[async_trait]
