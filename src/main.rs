@@ -3,8 +3,10 @@ use std::net::SocketAddr;
 use dotenv::dotenv;
 
 mod todo_controller;
+mod todo_repository;
 mod database;
 mod models;
+mod repository;
 
 use crate::todo_controller::{index, make_memes};
 use crate::database::db_connect;
