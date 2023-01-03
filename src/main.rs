@@ -17,12 +17,10 @@ async fn main() {
     dotenv().ok();
 
     let pool = db_connect().await.unwrap();
-
     
     let todo_repository = TodoRepository{
         db_connection: pool
     };
-
 
     let app = Router::new()
     .route("/todos", get(index))
@@ -32,7 +30,6 @@ async fn main() {
     .route("/todos/:id", delete(destroy))
     .layer(Extension(todo_repository));
 
-    // run it
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
     println!("listening on {}", addr);
     axum::Server::bind(&addr)

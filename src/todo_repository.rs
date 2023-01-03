@@ -3,7 +3,6 @@ use async_trait::async_trait;
 
 use crate::repository::Repository;
 use crate::models::{Todo, CreateTodo, UpdateTodo};
-use axum::Json;
 
 #[derive(Clone)]
 pub struct TodoRepository {
@@ -15,18 +14,14 @@ impl Repository<Todo, CreateTodo, UpdateTodo> for TodoRepository {
     async fn index(&self) -> Vec<Todo> {
         sqlx::query_as!(Todo,
             "SELECT * FROM todos"
-        ).fetch_all(&self.db_connection).await.unwrap()
-    
+        ).fetch_all(&self.db_connection).await.unwrap()    
     }
 
     async fn find(&self, id: u64) -> Todo {
-
         sqlx::query_as!(Todo,
             "SELECT * FROM todos WHERE id = ?"
         , id)
-        .fetch_one(&self.db_connection).await.unwrap()
-
-    
+        .fetch_one(&self.db_connection).await.unwrap() 
     }
 
     async fn create(&self, payload: CreateTodo) -> u64{

@@ -9,8 +9,6 @@ use crate::repository::Repository;
 use crate::models::{Todo, CreateTodo, UpdateTodo};
 use crate::todo_repository::{TodoRepository};
 
-
-
 pub async fn index(todo_repository: Extension<TodoRepository>) -> impl IntoResponse{
     let data: Vec<Todo> = todo_repository.index().await;
 
