@@ -6,3 +6,14 @@ pub struct Todo {
     pub description: String,
     pub done: i8,
 }
+
+#[derive(Deserialize)]
+pub struct CreateTodo {
+    pub description: String,
+}
+
+#[derive(Deserialize)]
+pub struct UpdateTodo {
+    pub description: String,
+    pub done: bool
+}

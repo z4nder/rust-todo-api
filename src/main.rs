@@ -1,4 +1,4 @@
-use axum::{routing::get, Router, Extension};
+use axum::{routing::get, routing::post, routing::put, routing::delete, Router, Extension};
 use std::net::SocketAddr;
 use dotenv::dotenv;
 
@@ -8,7 +8,7 @@ mod database;
 mod models;
 mod repository;
 
-use crate::todo_controller::{index, find};
+use crate::todo_controller::{index, find, create, update, destroy};
 use crate::database::db_connect;
 use crate::todo_repository::{TodoRepository};
 
@@ -25,8 +25,11 @@ async fn main() {
 
 
     let app = Router::new()
-    .route("/", get(index))
-    .route("/:id", get(find))
+    .route("/todos", get(index))
+    .route("/todos/:id", get(find))
+    .route("/todos", post(create))
+    .route("/todos/:id", put(update))
+    .route("/todos/:id", delete(destroy))
     .layer(Extension(todo_repository));
 
     // run it

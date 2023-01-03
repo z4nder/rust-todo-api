@@ -2,7 +2,8 @@ use sqlx::MySqlPool;
 use async_trait::async_trait;
 
 use crate::repository::Repository;
-use crate::models::{Todo};
+use crate::models::{Todo, CreateTodo, UpdateTodo};
+use axum::Json;
 
 #[derive(Clone)]
 pub struct TodoRepository {
@@ -10,7 +11,7 @@ pub struct TodoRepository {
 }
 
 #[async_trait]
-impl Repository<Todo> for TodoRepository {
+impl Repository<Todo, CreateTodo, UpdateTodo> for TodoRepository {
     async fn index(&self) -> Vec<Todo> {
         sqlx::query_as!(Todo,
             "SELECT * FROM todos"
@@ -28,27 +29,28 @@ impl Repository<Todo> for TodoRepository {
     
     }
 
-    async fn save(&self, description: String) -> u64{
+    async fn create(&self, payload: CreateTodo) -> u64{
         sqlx::query_as!(Todo,
             "INSERT INTO todos (description) VALUES (?)",
-            description
+            payload.description
         ).execute(&self.db_connection)
         .await
         .unwrap().
         last_insert_id()
     }
 
-    async fn update(&self, description: String, done: bool){
-        sqlx::query_as!(Todo, 
-            "UPDATE todos SET description = ? WHERE done = ?",
-            description, 
-            done
-        ).fetch_one(&self.db_connection).await.unwrap();    
+    async fn update(&self, id: u64, payload: UpdateTodo){
+        sqlx::query!( 
+            "UPDATE todos SET description = ?, done = ? WHERE id = ?",
+            payload.description, 
+            payload.done,
+            id
+        ).execute(&self.db_connection).await.unwrap();
     }
     
     async fn delete(&self, id: u64) {
        sqlx::query_as!(Todo, 
         "DELETE FROM todos WHERE id = ?", id
-       ).fetch_one(&self.db_connection).await.unwrap();        
+       ).execute(&self.db_connection).await.unwrap();        
     }
 }
